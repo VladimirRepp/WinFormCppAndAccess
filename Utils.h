@@ -28,5 +28,7 @@ public:
 	void Insert();
 	void Insert(Field^);
 	void Update(Field^);
+	void Update();
 	void Delete(Field^);
+	void Delete();
 };
