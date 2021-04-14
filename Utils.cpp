@@ -2,12 +2,12 @@
 
 Utils::Utils()
 {
-	throw gcnew System::NotImplementedException();
+	fields = gcnew List<Field^>();
 }
 
 Utils::~Utils()
 {
-	throw gcnew System::NotImplementedException();
+	fields->Clear();
 }
 
 void Utils::Download()
@@ -28,6 +28,8 @@ void Utils::Download()
 			MessageBox::Show("Data reading error!", "Error!");
 		}
 		else {
+			fields->Clear();
+
 			// We do the necessary actions with the data
 			while (dbReader->Read()) {
 				// For example:  
