@@ -122,18 +122,53 @@ void Utils::Update(Field^ f)
 		String^ connectionString = "provider=Microsoft.Jet.OLEDB.4.0;Data Source=Database.mdb";
 		OleDbConnection^ dbConnection = gcnew OleDbConnection(connectionString);
 
-		//Выполняем запрос к БД
-		dbConnection->Open();//открываем соеденение
-		String^ query = "UPDATE [table_name] SET Name='" + f->name + " WHERE id = " + f->id;//запрос
-		OleDbCommand^ dbComand = gcnew OleDbCommand(query, dbConnection);//команда
+		// Executing a query to the database
+		dbConnection->Open();
+		String^ query = "UPDATE [table_name] SET Name='" + f->name + " WHERE id = " + f->id;
+		OleDbCommand^ dbComand = gcnew OleDbCommand(query, dbConnection);
 
-		//Выполняем запрос
+		// Executing the request
 		if (dbComand->ExecuteNonQuery() != 1)
-			MessageBox::Show("Ошибка выполнения запроса!", "Ошибка!");
+			MessageBox::Show("Updating error!", "Error!");
 		else
-			MessageBox::Show("Данные изменены!", "Готово!");
+			MessageBox::Show("Data update!", "Done!");
 
-		//Закрываем соеденение с БД
+		// Closing the connection to the database
+		dbConnection->Close();
+	}
+	catch (OleDbException^ e) {
+		MessageBox::Show(e->ToString(), "Error!");
+	}
+}
+
+void Utils::Update()
+{
+	try {
+		// Connecting to the database
+		String^ connectionString = "provider=Microsoft.Jet.OLEDB.4.0;Data Source=Database.mdb";
+		OleDbConnection^ dbConnection = gcnew OleDbConnection(connectionString);
+
+		// Executing a query to the database
+		dbConnection->Open();
+
+		// Update all data
+		bool err = false;
+		for each (Field^ f in fields)
+		{
+			String^ query = "UPDATE [table_name] SET Name='" + f->name + " WHERE id = " + f->id;
+			OleDbCommand^ dbComand = gcnew OleDbCommand(query, dbConnection);
+
+			// Executing the request
+			if (dbComand->ExecuteNonQuery() != 1)
+				err = true;
+		}
+		
+		if(err)
+			MessageBox::Show("Updating error!", "Error!");
+		else
+			MessageBox::Show("Data update!", "Done!");
+
+		// Closing the connection to the database
 		dbConnection->Close();
 	}
 	catch (OleDbException^ e) {
@@ -151,6 +186,33 @@ void Utils::Delete(Field^ f)
 		// Executing a query to the database
 		dbConnection->Open();
 		String^ query = "DELETE FROM [table_name] WHERE id = " + f->id;
+		OleDbCommand^ dbComand = gcnew OleDbCommand(query, dbConnection);
+
+		// Executing the request
+		if (dbComand->ExecuteNonQuery() != 1)
+			MessageBox::Show("Deletion error!", "Error!");
+		else {
+			MessageBox::Show("Data deleted!", "Done!");
+		}
+
+		// Closing the connection
+		dbConnection->Close();
+	}
+	catch (OleDbException^ e) {
+		MessageBox::Show(e->ToString(), "Error!");
+	}
+}
+
+void Utils::Delete()
+{
+	try {
+		// Connecting to the database
+		String^ connectionString = "provider=Microsoft.Jet.OLEDB.4.0;Data Source=Database.mdb";
+		OleDbConnection^ dbConnection = gcnew OleDbConnection(connectionString);
+
+		// Executing a query to the database
+		dbConnection->Open();
+		String^ query = "DELETE FROM [table_name]"; // clear table
 		OleDbCommand^ dbComand = gcnew OleDbCommand(query, dbConnection);
 
 		// Executing the request
